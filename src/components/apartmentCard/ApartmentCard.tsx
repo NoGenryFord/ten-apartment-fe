@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { Apartment } from '../types';
+import type { Apartment } from '../../types';
 
 interface Props {
     apartment: Apartment;
