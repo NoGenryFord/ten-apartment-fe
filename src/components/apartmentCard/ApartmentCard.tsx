@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { Apartment } from '../../types';
-import {Card, CardSection, Image, Title, Text, Group, Button, Badge} from '@mantine/core';
+import {Card, Image, Title, Text, Group, Badge} from '@mantine/core';
 
 import classes from './ApartmentCard.module.css';
 
@@ -14,44 +14,54 @@ export const ApartmentCard = ({ apartment }: Props) => {
         : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; // ЗАГЛУШКА ВРЕМЕННО
 
     return (
-        <Card className={classes.card} shadow={"sm"} padding="lg" radius="md" withBorder display="flex" style={{ flexDirection: 'column'}} h="100%">
-            {/* Фото */}
-            <CardSection>
+        <Card
+            component={Link}
+            to={`/apartment/${apartment.id}`}
+            className={classes.card}
+            padding={0}
+            radius="md"
+            style={{ textDecoration: 'none', backgroundColor: 'transparent' }}
+        >
+            {/* Контейнер для фото с бейджиком */}
+            <div style={{ position: 'relative' }}>
                 <Image
                     src={coverImage}
-                    height={220}
-                    alt='Apartment'
+                    height={280}
+                    radius="md"
+                    alt={apartment.name}
                 />
-            </CardSection>
 
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <Group justify="space-between" mt="md" mb="xs">
-                    <Title order={3} size="h4" fw={600}>{apartment.name}</Title>
-                    <Badge color="blue" variant="light">{apartment.type?.name || 'Apartment'}</Badge>
+                <Badge
+                    style={{ position: 'absolute', top: 12, left: 12 }}
+                    color="white"
+                    variant="filled"
+                    c="dark"
+                    size="sm"
+                >
+                    {apartment.type?.name || 'Апартамент'}
+                </Badge>
+            </div>
+
+
+            <div style={{ marginTop: '12px' }}>
+                <Group justify="space-between" align="flex-start" gap="xs" mb={2}>
+                    <Title order={3} size="h5" fw={600} lineClamp={1} style={{ flex: 1 }} c="dark">
+                        {apartment.name}
+                    </Title>
                 </Group>
 
-                <Text size="sm" c="dimmed" lineClamp={3} mb="md" style={{ flex: 1 }}>
+                <Text size="sm" c="dimmed" lineClamp={1} mb={6}>
                     {apartment.description}
                 </Text>
 
-                {apartment.total_price && (
-                    <Group justify="space-between" mb="md">
-                        <Text size="sm" fw={500}>For choose dates:</Text>
-                        <Text size="lg" fw={700} c="blue">{apartment.total_price} ₽</Text>
-                    </Group>
-                )}
-
-                <Button
-                    component={Link}
-                    to={`/apartment/${apartment.id}`}
-                    variant="light"
-                    color="blue"
-                    fullWidth
-                    mt="auto"
-                    radius="md"
-                >
-                    Details
-                </Button>
+                <Group gap={6} align="baseline">
+                    <Text fw={700} c="dark">
+                        {apartment.total_price ? `${apartment.total_price}` : 'Price for this apartment'}
+                    </Text>
+                    <Text size="sm" c="dimmed">
+                        {apartment.total_price ? 'for choose dates' : ''}
+                    </Text>
+                </Group>
             </div>
         </Card>
     );
