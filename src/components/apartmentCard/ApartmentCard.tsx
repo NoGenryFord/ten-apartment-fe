@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom';
 import type { Apartment } from '../../types';
+import {Card, CardSection, Image, Title, Text, Group} from '@mantine/core';
+
+import classes from './ApartmentCard.module.css';
 
 interface Props {
     apartment: Apartment;
@@ -11,42 +14,40 @@ export const ApartmentCard = ({ apartment }: Props) => {
         : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; // ЗАГЛУШКА ВРЕМЕННО
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full">
+        <Card className={classes.card} shadow={"sm"} padding="lg" radius="md" withBorder orientation={"vertical"} w={240}>
             {/* Фото */}
-            <div className="h-48 overflow-hidden">
-                <img
+            <CardSection>
+                <Image
                     src={coverImage}
-                    alt={apartment.name}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    height={220}
+                    w={200}
+                    alt='Apartment'
                 />
-            </div>
+            </CardSection>
 
             {/* Контент */}
-            <div className="p-5 flex flex-col flex-grow">
-                <div className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-2">
-                    {apartment.type?.name || 'Апартаменты'}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{apartment.name}</h3>
+                <Title size={"xl"} className="mb-2">
+                    {apartment.name}
+                </Title>
 
-                <p className="text-gray-600 text-sm line-clamp-2 mb-4 flex-grow">
+                <Text>
                     {apartment.description}
-                </p>
+                </Text>
 
                 {/* Если поиск был по датам, BE вернет total_price */}
                 {apartment.total_price && (
-                    <div className="mb-4">
-                        <span className="text-sm text-gray-500">For choose date: </span>
-                        <span className="text-lg font-bold text-gray-900">{apartment.total_price} ₽</span>
-                    </div>
+                    <Group className="mb-4">
+                        <Text>For choose date: </Text>
+                        <Text>{apartment.total_price} ₽</Text>
+                    </Group>
                 )}
 
                 <Link
                     to={`/apartment/${apartment.id}`}
-                    className="w-full text-center bg-gray-900 text-white py-2.5 rounded-xl font-medium hover:bg-gray-800 transition-colors mt-auto"
                 >
                     Details
                 </Link>
-            </div>
-        </div>
+        </Card>
     );
 };
+
