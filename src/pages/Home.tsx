@@ -28,7 +28,7 @@ export const Home = () => {
 
             <Title order={2} mt={"xl"} mb={"lg"}>Our Apartments</Title>
 
-            <SimpleGrid cols={{base: 1, sm: 2, lg: 3}} spacing={"lg"}>
+            <SimpleGrid cols={{base: 1, sm: 2, md: 3, lg: 4}} spacing={"lg"}>
                 {apartments?.map((apartment) => (
                     <ApartmentCard key={apartment.id} apartment={apartment} />
                 ))}
