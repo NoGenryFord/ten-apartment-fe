@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 
 // import mantine
-import {Container} from '@mantine/core';
+import {Container, SimpleGrid, Title} from '@mantine/core';
 // import page style
 import classes from './Home.module.css';
 
@@ -22,13 +22,19 @@ export const Home = () => {
     if (isError) return <Container className={classes.wrapper}>Error: {(error as Error).message}</Container>;
 
     return (
-        <Container className={classes.wrapper}>
+        <Container size={"xl"} className={classes.wrapper} py={"xl"}>
             <HeaderSimple/>
             <HeroText></HeroText>
 
-            {apartments?.map((apartment) => (
-                <ApartmentCard key={apartment.id} apartment={apartment} />
-            ))}
+            <Title order={2} mt={"xl"} mb={"lg"}>Our Apartments</Title>
+
+            <SimpleGrid cols={{base: 1, sm: 2, lg: 3}} spacing={"lg"}>
+                {apartments?.map((apartment) => (
+                    <ApartmentCard key={apartment.id} apartment={apartment} />
+                ))}
+            </SimpleGrid>
+
+
         </Container>
     )
 }
