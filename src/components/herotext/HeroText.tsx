@@ -1,10 +1,19 @@
-import { Container, Text, Title } from '@mantine/core';
+import type {Dispatch, SetStateAction} from 'react';
+
+import {Container, Text, Title} from '@mantine/core';
+import {DatePickerInput} from "@mantine/dates";
+
 import classes from './HeroText.module.css';
+import '@mantine/dates/styles.css';
 
-import {Calendar} from "@mantine/dates";
+type DateRange = [string | null, string | null];
 
+interface HeroTextProps {
+    dateRange: DateRange;
+    setDateRange: Dispatch<SetStateAction<DateRange>>;
+}
 
-export function HeroText() {
+export function HeroText({dateRange, setDateRange}:HeroTextProps) {
     return (
         <Container className={classes.wrapper} size={1400}>
             <div className={classes.inner}>
@@ -22,13 +31,18 @@ export function HeroText() {
                     </Text>
                 </Container>
 
-                <Calendar className={classes.calendar}
-                classNames={{
-                    day: classes.calendarDay,
-                    weekday: classes.calendarWeekday,
-                    month: classes.calendarMonth,
-                    calendarHeader: classes.calendarHeader,
-                }}/>
+                {/*Выбор дат аренды*/}
+                <div style={{ maxWidth: 400, margin: '2rem 0'}}>
+                    <DatePickerInput
+                        type="range"
+                        label="Dates of stay"
+                        placeholder="Check-in - Check-out"
+                        value={dateRange}
+                        onChange={setDateRange}
+                        clearable
+                        minDate={new Date()}
+                    />
+                </div>
             </div>
         </Container>
     );
