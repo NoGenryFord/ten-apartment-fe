@@ -41,6 +41,9 @@ export function HeroText({dateRange, setDateRange}:HeroTextProps) {
                         onChange={setDateRange}
                         clearable
                         minDate={new Date()}
+                        classNames={{
+                            day: classes.day,
+                        }}
                     />
                 </div>
             </div>

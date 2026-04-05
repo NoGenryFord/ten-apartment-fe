@@ -42,20 +42,30 @@
     }
 }
 
-.calendar{
-    margin-top: var(--mantine-spacing-xs);
-    display: flex;
-    justify-content: center;
-
-}
-
-.calenderMonth{
+.day[data-selected] {
+    background-color: var(--mantine-color-blue-6);
+    color: white;
     border-radius: var(--mantine-radius-sm);
-    background: var(--mantine-color-body);
 }
-.calendarDay{
-    border-radius: var(--mantine-radius-lg);
 
-    @mixin hover {
-    }
+.day[data-in-range] {
+    background-color: var(--mantine-color-blue-1);
+    color: var(--mantine-color-blue-9);
+    border-radius: 0;
+}
+
+.day[data-first-in-range] {
+    background-color: var(--mantine-color-blue-6);
+    color: white;
+    border-radius: var(--mantine-radius-sm) 0 0 var(--mantine-radius-sm);
+}
+
+.day[data-last-in-range] {
+    background-color: var(--mantine-color-blue-6);
+    color: white;
+    border-radius: 0 var(--mantine-radius-sm) var(--mantine-radius-sm) 0;
+}
+
+.day:hover {
+    background-color: var(--mantine-color-blue-2);
 }
