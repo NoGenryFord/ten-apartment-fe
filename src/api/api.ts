@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+import {IPConfigurator} from "./utils";
+
+const configurator = new IPConfigurator();
+
+const BASE_URL = await configurator.getFirstWorkingUrl(import.meta.env.VITE_API_URL_HOSTS_DEV) || '/api';
+
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL_EXPOSE_HOST || 'http://127.0.0.1:8000/api/v1/',
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
