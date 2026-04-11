@@ -56,7 +56,7 @@ export const ApartmentCard = ({ apartment }: Props) => {
 
                 <Group gap={6} align="baseline">
                     <Text fw={700} c="dark">
-                        {apartment.total_price ? `${apartment.total_price}` : 'Price for this apartment'}
+                        {apartment.total_price ? `${apartment.total_price}` : 'Price for request'}
                     </Text>
                     <Text size="sm" c="dimmed">
                         {apartment.total_price ? 'for choose dates' : ''}
