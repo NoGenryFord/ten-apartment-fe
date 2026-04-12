@@ -1,31 +1,49 @@
 .wrapper {
     position: relative;
-    padding-top: 60px;
-    padding-bottom: 60px;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    padding-top: 32px;
+    padding-bottom: 32px;
 
-    @media (max-width: $mantine-breakpoint-sm) {
-        padding-top: 80px;
-        padding-bottom: 60px;
+    @media (max-width: 768px) {
+        min-height: auto;
+        padding-top: 40px;
+        padding-bottom: 24px;
     }
 }
 
 .inner {
-    position: relative;
-    z-index: 1;
+    width: 100%;
+}
+
+.content {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    justify-content: flex-start;
+
+    @media (max-width: 992px) {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+.left {
+    max-width: 680px;
 }
 
 .title {
-    text-align: center;
+    text-align: left;
     font-weight: 800;
     font-size: 40px;
     letter-spacing: -1px;
     color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
-    margin-bottom: var(--mantine-spacing-xs);
+    margin-bottom: 12px;
 
 
-    @media (max-width: $mantine-breakpoint-xs) {
+    @media (max-width: 576px) {
         font-size: 28px;
-        text-align: left;
     }
 }
 
@@ -34,38 +52,16 @@
 }
 
 .description {
-    text-align: center;
+    text-align: left;
+    max-width: 560px;
+    margin-bottom: 18px;
 
-    @media (max-width: $mantine-breakpoint-xs) {
-        text-align: left;
+    @media (max-width: 576px) {
         font-size: var(--mantine-font-size-md);
     }
 }
 
-.day[data-selected] {
-    background-color: var(--mantine-color-blue-6);
-    color: white;
-    border-radius: var(--mantine-radius-sm);
+.reserveBtn {
+    min-width: 170px;
 }
 
-.day[data-in-range] {
-    background-color: var(--mantine-color-blue-1);
-    color: var(--mantine-color-blue-9);
-    border-radius: 0;
-}
-
-.day[data-first-in-range] {
-    background-color: var(--mantine-color-blue-6);
-    color: white;
-    border-radius: var(--mantine-radius-sm) 0 0 var(--mantine-radius-sm);
-}
-
-.day[data-last-in-range] {
-    background-color: var(--mantine-color-blue-6);
-    color: white;
-    border-radius: 0 var(--mantine-radius-sm) var(--mantine-radius-sm) 0;
-}
-
-.day:hover {
-    background-color: var(--mantine-color-blue-2);
-}

@@ -1,8 +1,12 @@
-import {useState} from "react";
+import {useMemo, useRef, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 
 // import mantine
-import {Container, SimpleGrid, Title} from '@mantine/core';
+import {Container, Image, Paper, SimpleGrid, Text, Title} from '@mantine/core';
+import {Carousel} from '@mantine/carousel';
+import {DatePickerInput} from "@mantine/dates";
+import '@mantine/dates/styles.css';
+import '@mantine/carousel/styles.css';
 
 // import page style
 import classes from './Home.module.css';
@@ -16,6 +20,7 @@ import {getApartments, searchApartments} from "../features/apartments/api.ts";
 export const Home = () => {
 
     const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
+    const calendarRef = useRef<HTMLDivElement | null>(null);
 
     const {data: apartments, isLoading, isError, error} = useQuery({
         queryKey:['apartments', dateRange],
@@ -31,21 +36,74 @@ export const Home = () => {
         }
     });
 
+    const galleryImages = useMemo(() => {
+        return (apartments ?? [])
+            .flatMap((apartment) => apartment.photos.slice(0, 1).map((photo) => ({
+                id: `${apartment.id}-${photo.id}`,
+                name: apartment.name,
+                src: photo.photo,
+            })))
+            .slice(0, 8);
+    }, [apartments]);
+
     if (isLoading) return <Container className={classes.wrapper}>Loading...</Container>;
     if (isError) return <Container className={classes.wrapper}>Error: {(error as Error).message}</Container>;
 
     return (
         <Container size={"xl"} className={classes.wrapper} py={"xl"}>
             <HeaderSimple/>
-            <HeroText dateRange={dateRange} setDateRange={setDateRange} ></HeroText>
+            <HeroText
+                onReservationClick={() => calendarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            />
 
-            <Title order={2} mt={"xl"} mb={"lg"}>Our Apartments</Title>
+            <section className={classes.section}>
+                <Title order={2} mb="lg">Gallery</Title>
 
-            <SimpleGrid cols={{base: 1, sm: 2, md: 3, lg: 4}} spacing={"lg"}>
-                {apartments?.map((apartment) => (
-                    <ApartmentCard key={apartment.id} apartment={apartment} />
-                ))}
-            </SimpleGrid>
+                {galleryImages.length > 0 ? (
+                    <Carousel
+                        withIndicators
+                        withControls
+                        emblaOptions={{ loop: true }}
+                        className={classes.galleryCarousel}
+                    >
+                        {galleryImages.map((item) => (
+                            <Carousel.Slide key={item.id}>
+                                <Paper withBorder radius="md" className={classes.gallerySlide}>
+                                    <Image src={item.src} alt={item.name} className={classes.galleryImage} />
+                                    <Text p="sm" size="sm" c="dimmed" lineClamp={1}>{item.name}</Text>
+                                </Paper>
+                            </Carousel.Slide>
+                        ))}
+                    </Carousel>
+                ) : (
+                    <Text c="dimmed">Gallery will appear after apartments with photos are loaded.</Text>
+                )}
+            </section>
+
+            <section className={classes.section} ref={calendarRef}>
+                <Title order={2} mb="lg">Calendar</Title>
+                <Paper withBorder radius="md" p="lg" className={classes.calendarCard}>
+                    <DatePickerInput
+                        type="range"
+                        label="Choose reservation dates"
+                        placeholder="Check-in - Check-out"
+                        value={dateRange}
+                        onChange={setDateRange}
+                        clearable
+                        minDate={new Date()}
+                    />
+                </Paper>
+            </section>
+
+            <section className={classes.section} id="apartments-grid">
+                <Title order={2} mb={"lg"}>Grid with Apartments</Title>
+
+                <SimpleGrid cols={{base: 1, sm: 2, md: 3, lg: 4}} spacing={"lg"}>
+                    {apartments?.map((apartment) => (
+                        <ApartmentCard key={apartment.id} apartment={apartment} />
+                    ))}
+                </SimpleGrid>
+            </section>
 
 
         </Container>

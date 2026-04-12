@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Burger, Container, Divider, Drawer, Group, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { Link } from 'react-router-dom';
 import classes from './HeaderSimple.module.css';
 
 const links = [
@@ -35,7 +36,9 @@ export function HeaderSimple() {
     return (
         <header className={classes.header}>
             <Container className={classes.inner}>
-                <img src={logoUrl ? logoUrl : logoUrl} alt="logo" className={classes.logo}/>
+                <Link to="/" aria-label="Go to home page">
+                    <img src={logoUrl ? logoUrl : logoUrl} alt="logo" className={classes.logo}/>
+                </Link>
                 <Group gap={5} visibleFrom="xs">
                     {items}
                 </Group>
