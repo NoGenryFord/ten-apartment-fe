@@ -19,9 +19,14 @@ export interface Apartment {
     type: ApartmentType;
     description: string;
     photos: ApartmentPhoto[];
-    video: ApartmentVideo[];
+    videos: ApartmentVideo[];
     url_obj: string;
     total_price?: string;
+    // Optional fields — add to Django serializer fields[] to enable
+    max_guests?: number;
+    address?: string;
+    latitude?: number | string;
+    longitude?: number | string;
 }
 
 export interface Schedule {

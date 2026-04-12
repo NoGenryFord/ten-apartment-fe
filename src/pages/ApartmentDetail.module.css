@@ -1,0 +1,132 @@
+/* ─── Carousel ─────────────────────────────────────────────── */
+.carousel {
+    border-radius: var(--mantine-radius-md);
+    overflow: hidden;
+}
+
+.mediaItem {
+    width: 100%;
+    height: 460px;
+    object-fit: cover;
+    display: block;
+
+    @media (max-width: $mantine-breakpoint-sm) {
+        height: 260px;
+    }
+}
+
+.carouselControl {
+    background-color: rgba(255, 255, 255, 0.92);
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+    &:hover {
+        background-color: white;
+    }
+}
+
+.carouselIndicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.6);
+    transition: background-color 150ms ease;
+
+    &[data-active] {
+        background-color: white;
+        width: 20px;
+        border-radius: 4px;
+    }
+}
+
+/* ─── No media placeholder ──────────────────────────────────── */
+.noMedia {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--mantine-color-gray-1);
+    border-radius: var(--mantine-radius-md);
+    margin-bottom: var(--mantine-spacing-xl);
+}
+
+/* ─── Sticky booking panel ──────────────────────────────────── */
+.bookingPanel {
+    position: sticky;
+    top: 20px;
+}
+
+.mapWrap {
+    border-radius: var(--mantine-radius-md);
+    overflow: hidden;
+    border: 1px solid var(--mantine-color-gray-2);
+}
+
+.mapFrame {
+    width: 100%;
+    height: 320px;
+    border: 0;
+    display: block;
+}
+
+/* ─── Calendar day styling ──────────────────────────────────── */
+.day[data-selected] {
+    background-color: var(--mantine-color-blue-6) !important;
+    color: white !important;
+    border-radius: var(--mantine-radius-sm) !important;
+}
+
+.day[data-in-range] {
+    background-color: var(--mantine-color-blue-1) !important;
+    color: var(--mantine-color-blue-9) !important;
+    border-radius: 0 !important;
+}
+
+.day[data-first-in-range] {
+    background-color: var(--mantine-color-blue-6) !important;
+    color: white !important;
+    border-radius: var(--mantine-radius-sm) 0 0 var(--mantine-radius-sm) !important;
+}
+
+.day[data-last-in-range] {
+    background-color: var(--mantine-color-blue-6) !important;
+    color: white !important;
+    border-radius: 0 var(--mantine-radius-sm) var(--mantine-radius-sm) 0 !important;
+}
+
+.day:not([data-disabled]):not([data-selected]):not([data-in-range]):hover {
+    background-color: var(--mantine-color-blue-1);
+}
+
+/* ─── Legend mini-day examples ─────────────────────────────── */
+.legendDay {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--mantine-radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+
+    /* Available — looks like a normal calendar day */
+    &[data-variant='normal'] {
+        border: 1px solid var(--mantine-color-gray-3);
+        color: var(--mantine-color-dark-6);
+    }
+
+    /* Unavailable — matches the disabled style in getDayProps */
+    &[data-variant='unavailable'] {
+        color: var(--mantine-color-gray-5);
+        opacity: 0.4;
+        text-decoration: line-through;
+    }
+
+    /* Selected — matches [data-selected] calendar style */
+    &[data-variant='selected'] {
+        background-color: var(--mantine-color-blue-6);
+        color: white;
+    }
+}
+
