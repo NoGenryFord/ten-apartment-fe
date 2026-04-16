@@ -1,18 +1,22 @@
 .header {
-    height: 56px;
+    height: auto;
     background-color: var(--mantine-color-body);
-    border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+    margin-bottom: 14px;
 }
 
 .logo{
-    height: 48px;
+    height: 44px;
+    display: block;
 }
 
 .inner {
-    height: 56px;
+    min-height: 56px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid light-dark(rgba(134, 142, 150, 0.25), rgba(206, 212, 218, 0.2));
 }
 
 .link {
@@ -25,12 +29,12 @@
     font-size: var(--mantine-font-size-sm);
     font-weight: 500;
 
-    @media (max-width: $mantine-breakpoint-xs) {
+    @media (max-width: 576px) {
         border-radius: 0;
         padding: var(--mantine-spacing-md);
     }
 
-    @mixin hover {
+    &:hover {
         background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
     }
 

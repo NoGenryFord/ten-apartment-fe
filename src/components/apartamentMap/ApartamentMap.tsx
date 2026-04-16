@@ -37,7 +37,7 @@ interface ApartmentMapProps {
     latitude: number;
     longitude: number;
     name: string;
-    address?: string;
+    address?: string;  
 }
 
 export const ApartmentMap = ({ latitude, longitude, name, address }: ApartmentMapProps) => {
