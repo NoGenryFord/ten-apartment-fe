@@ -4,7 +4,7 @@ import {useQuery} from "@tanstack/react-query";
 // import mantine
 import {Container, Image, Paper, SimpleGrid, Text, Title} from '@mantine/core';
 import {Carousel} from '@mantine/carousel';
-import {DatePickerInput} from "@mantine/dates";
+import {DatePicker} from "@mantine/dates";
 import '@mantine/dates/styles.css';
 import '@mantine/carousel/styles.css';
 
@@ -24,15 +24,18 @@ export const Home = () => {
     const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
     const [activeBooking, setActiveBooking] = useState(getActiveBookingDraft());
     const calendarRef = useRef<HTMLDivElement | null>(null);
+    const hasFullRange = Boolean(dateRange[0] && dateRange[1]);
+
+    // Keep query key stable on first click (only start date selected),
+    // so React Query does not spin a new request and UI does not look like a page refresh.
+    const searchStart = hasFullRange ? dateRange[0] : null;
+    const searchEnd = hasFullRange ? dateRange[1] : null;
 
     const {data: apartments, isLoading, isError, error} = useQuery({
-        queryKey:['apartments', dateRange],
+        queryKey:['apartments', searchStart, searchEnd],
         queryFn: () => {
-        //     Если даты выбраны
-            if (dateRange[0]){
-                const start = dateRange[0];
-                const end = dateRange[1] ?? start;
-                return searchApartments(start, end)
+            if (searchStart && searchEnd){
+                return searchApartments(searchStart, searchEnd)
             }
         //     Есди даты не выбраны
             return getApartments();
@@ -93,15 +96,17 @@ export const Home = () => {
             <section className={classes.section} ref={calendarRef}>
                 <Title order={2} mb="lg">Calendar</Title>
                 <Paper withBorder radius="md" p="lg" className={classes.calendarCard}>
-                    <DatePickerInput
+                    <DatePicker
                         type="range"
-                        label="Choose reservation dates"
-                        placeholder="Check-in - Check-out"
+                        allowSingleDateInRange
                         value={dateRange}
                         onChange={setDateRange}
-                        clearable
                         minDate={new Date()}
+                        classNames={{ day: classes.day }}
                     />
+                    <Text size="xs" c="dimmed" mt="sm">
+                        Select check-in and check-out dates to filter apartments.
+                    </Text>
                 </Paper>
             </section>
 
