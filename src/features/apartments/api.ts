@@ -1,6 +1,34 @@
 import api from '../../api/api';
 import type { Apartment, Schedule } from '../../types';
 
+interface CreateBookingPayload {
+    apartment_id: number;
+    start_date: string;
+    end_date: string;
+}
+
+interface CreateBookingResponse {
+    message: string;
+    booking_id: number;
+    total_price: string;
+    reserved_until: string;
+    status: string;
+}
+
+interface StartPaymentPayload {
+    email: string;
+    first_name: string;
+    last_name: string;
+}
+
+interface StartPaymentResponse {
+    message: string;
+    payment_url: string;
+    booking_id: number;
+    status: string;
+    reserved_until: string | null;
+}
+
 export const getApartments = async (): Promise<Apartment[]> => {
     const { data } = await api.get<Apartment[]>('apartments/');
     return data;
@@ -13,7 +41,7 @@ export const getApartmentById = async (id: number): Promise<Apartment> => {
 
 export const getApartmentSchedule = async (id: number): Promise<Schedule[]> => {
     const { data } = await api.get<Schedule[]>('schedules/', {
-        params: { apartment: id }
+        params: { apartment_id: id }
     });
     return data;
 };
@@ -22,5 +50,18 @@ export const searchApartments = async (start: string, end: string): Promise<Apar
     const { data } = await api.get<Apartment[]>(`apartments/search/`, {
         params: { start_date: start, end_date: end }
     });
+    return data;
+};
+
+export const createBooking = async (payload: CreateBookingPayload): Promise<CreateBookingResponse> => {
+    const { data } = await api.post<CreateBookingResponse>('bookings/', payload);
+    return data;
+};
+
+export const startBookingPayment = async (
+    bookingId: number,
+    payload: StartPaymentPayload,
+): Promise<StartPaymentResponse> => {
+    const { data } = await api.post<StartPaymentResponse>(`bookings/${bookingId}/start_payment/`, payload);
     return data;
 };
