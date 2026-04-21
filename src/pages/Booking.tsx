@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
@@ -19,7 +19,12 @@ import {
 } from '@mantine/core';
 
 import { HeaderSimple } from '../components/headersimple/HeaderSimple';
-import { createBooking, getApartmentById, startBookingPayment } from '../features/apartments/api';
+import { cancelBookingPayment, createBooking, getApartmentById, startBookingPayment } from '../features/apartments/api';
+import {
+    clearActiveBookingDraft,
+    getActiveBookingDraft,
+    saveActiveBookingDraft,
+} from '../features/booking/storage';
 import classes from './Booking.module.css';
 
 const isValidDate = (value: string | null): value is string => {
@@ -45,6 +50,21 @@ export const Booking = () => {
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [activeBookingId, setActiveBookingId] = useState<number | null>(null);
+
+    useEffect(() => {
+        const savedBooking = getActiveBookingDraft();
+        if (!savedBooking) return;
+
+        // Restore booking id only for the same apartment/date selection.
+        if (
+            savedBooking.apartmentId === apartmentId
+            && savedBooking.startDate === startDate
+            && savedBooking.endDate === endDate
+        ) {
+            setActiveBookingId(savedBooking.bookingId);
+        }
+    }, [apartmentId, endDate, startDate]);
 
     const { data: apartment, isLoading, isError } = useQuery({
         queryKey: ['booking-apartment', apartmentId],
@@ -65,6 +85,33 @@ export const Booking = () => {
             first_name: firstName,
             last_name: lastName,
         }),
+        onSuccess: (result) => {
+            setActiveBookingId(result.booking_id);
+            if (apartment && startDate && endDate) {
+                saveActiveBookingDraft({
+                    bookingId: result.booking_id,
+                    apartmentId,
+                    apartmentName: apartment.name,
+                    startDate,
+                    endDate,
+                    reservedUntil: result.reserved_until,
+                    status: result.status,
+                });
+            }
+        },
+    });
+
+    const cancelBookingMutation = useMutation({
+        mutationFn: (bookingId: number) => cancelBookingPayment(bookingId),
+        onSuccess: () => {
+            clearActiveBookingDraft();
+            setActiveBookingId(null);
+        },
+        onError: (error) => {
+            const fallback = 'Could not cancel this booking now.';
+            const message = error instanceof Error ? error.message : fallback;
+            setErrorMessage(message || fallback);
+        },
     });
 
     const createBookingMutation = useMutation({
@@ -91,6 +138,8 @@ export const Booking = () => {
     });
 
     if (!hasValidQuery) {
+        const savedBooking = getActiveBookingDraft();
+
         return (
             <Container size="xl" py="xl">
                 <HeaderSimple />
@@ -99,7 +148,17 @@ export const Booking = () => {
                     <Text c="dimmed" mb="lg">
                         Booking page expects apartment ID, check-in date, and check-out date.
                     </Text>
-                    <Button component={Link} to="/" variant="light">Back to apartments</Button>
+                    <Group>
+                        <Button component={Link} to="/" variant="light">Back to apartments</Button>
+                        {savedBooking && (
+                            <Button
+                                component={Link}
+                                to={`/booking?apartmentId=${savedBooking.apartmentId}&start=${savedBooking.startDate}&end=${savedBooking.endDate}`}
+                            >
+                                Open active booking
+                            </Button>
+                        )}
+                    </Group>
                 </Paper>
             </Container>
         );
@@ -131,6 +190,7 @@ export const Booking = () => {
 
     const isSubmitting = createBookingMutation.isPending || startPaymentMutation.isPending;
     const paymentResult = startPaymentMutation.data;
+    const canCancelBookingId = activeBookingId ?? paymentResult?.booking_id;
 
     return (
         <Container size="xl" py="xl">
@@ -221,6 +281,18 @@ export const Booking = () => {
                             >
                                 Confirm booking
                             </Button>
+
+                            {canCancelBookingId && (
+                                <Button
+                                    variant="light"
+                                    color="red"
+                                    fullWidth
+                                    loading={cancelBookingMutation.isPending}
+                                    onClick={() => cancelBookingMutation.mutate(canCancelBookingId)}
+                                >
+                                    Cancel this booking
+                                </Button>
+                            )}
 
                             <Button
                                 variant="light"

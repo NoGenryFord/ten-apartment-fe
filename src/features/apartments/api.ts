@@ -29,6 +29,12 @@ interface StartPaymentResponse {
     reserved_until: string | null;
 }
 
+interface CancelBookingResponse {
+    message: string;
+    booking_id: number;
+    status: string;
+}
+
 export const getApartments = async (): Promise<Apartment[]> => {
     const { data } = await api.get<Apartment[]>('apartments/');
     return data;
@@ -63,5 +69,10 @@ export const startBookingPayment = async (
     payload: StartPaymentPayload,
 ): Promise<StartPaymentResponse> => {
     const { data } = await api.post<StartPaymentResponse>(`bookings/${bookingId}/start_payment/`, payload);
+    return data;
+};
+
+export const cancelBookingPayment = async (bookingId: number): Promise<CancelBookingResponse> => {
+    const { data } = await api.post<CancelBookingResponse>(`bookings/${bookingId}/cancel_payment/`);
     return data;
 };

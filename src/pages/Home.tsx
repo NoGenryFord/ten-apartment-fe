@@ -16,10 +16,13 @@ import {HeroText} from '../components/herotext/HeroText';
 import {HeaderSimple} from "../components/headersimple/HeaderSimple.tsx";
 import {ApartmentCard} from "../components/apartmentCard/ApartmentCard.tsx";
 import {getApartments, searchApartments} from "../features/apartments/api.ts";
+import {ActiveBookingNotice} from "../components/activeBooking/ActiveBookingNotice.tsx";
+import {getActiveBookingDraft} from "../features/booking/storage.ts";
 
 export const Home = () => {
 
     const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
+    const [activeBooking, setActiveBooking] = useState(getActiveBookingDraft());
     const calendarRef = useRef<HTMLDivElement | null>(null);
 
     const {data: apartments, isLoading, isError, error} = useQuery({
@@ -55,6 +58,13 @@ export const Home = () => {
             <HeroText
                 onReservationClick={() => calendarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
             />
+
+            {activeBooking && (
+                <ActiveBookingNotice
+                    booking={activeBooking}
+                    onCleared={() => setActiveBooking(null)}
+                />
+            )}
 
             <section className={classes.section}>
                 <Title order={2} mb="lg">Gallery</Title>
