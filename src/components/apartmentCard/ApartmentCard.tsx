@@ -6,6 +6,7 @@ import classes from './ApartmentCard.module.css';
 
 interface Props {
     apartment: Apartment;
+    dateRange?: [string | null, string | null];
 }
 
 const formatPriceCzk = (value?: string): string | null => {
@@ -19,16 +20,24 @@ const formatPriceCzk = (value?: string): string | null => {
     return `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(numeric)} CZK`;
 };
 
-export const ApartmentCard = ({ apartment }: Props) => {
+export const ApartmentCard = ({ apartment, dateRange }: Props) => {
     const coverImage = apartment.photos && apartment.photos.length > 0
         ? apartment.photos[0].photo
         : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; // ЗАГЛУШКА ВРЕМЕННО
     const formattedPrice = formatPriceCzk(apartment.total_price);
 
+    const buildPath = () => {
+        let path = `/apartment/${apartment.id}`;
+        if (dateRange?.[0] && dateRange?.[1]) {
+            path += `?start=${dateRange[0]}&end=${dateRange[1]}`;
+        }
+        return path;
+    };
+
     return (
         <Card
             component={Link}
-            to={`/apartment/${apartment.id}`}
+            to={buildPath()}
             className={classes.card}
             padding={0}
             radius="md"

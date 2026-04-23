@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 
@@ -29,8 +29,15 @@ export const ApartmentDetail = () => {
     const { id } = useParams<{ id: string }>();
     const apartmentId = Number(id);
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
-    const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
+    const initialStart = searchParams.get('start');
+    const initialEnd = searchParams.get('end');
+
+    const [dateRange, setDateRange] = useState<[string | null, string | null]>([
+        initialStart,
+        initialEnd,
+    ]);
 
     const { data: apartment, isLoading, isError } = useQuery({
         queryKey: ['apartment', apartmentId],

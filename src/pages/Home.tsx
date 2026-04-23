@@ -138,7 +138,7 @@ export const Home = () => {
 
                 <SimpleGrid cols={{base: 1, sm: 2, md: 3, lg: 4}} spacing={"lg"}>
                     {apartments?.map((apartment) => (
-                        <ApartmentCard key={apartment.id} apartment={apartment} />
+                        <ApartmentCard key={apartment.id} apartment={apartment} dateRange={dateRange} />
                     ))}
                 </SimpleGrid>
             </section>
