@@ -1,5 +1,5 @@
 import {useMemo, useRef, useState} from "react";
-import {useQuery} from "@tanstack/react-query";
+import {keepPreviousData, useQuery} from "@tanstack/react-query";
 
 // import mantine
 import {CloseButton, Container, Group, Image, Paper, SimpleGrid, Text, Title} from '@mantine/core';
@@ -24,6 +24,7 @@ export const Home = () => {
     const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
     const [activeBooking, setActiveBooking] = useState(getActiveBookingDraft());
     const calendarRef = useRef<HTMLDivElement | null>(null);
+    const apartmentsRef = useRef<HTMLElement | null>(null);
     const hasFullRange = Boolean(dateRange[0] && dateRange[1]);
 
     // Keep query key stable on first click (only start date selected),
@@ -32,8 +33,19 @@ export const Home = () => {
     const searchEnd = hasFullRange ? dateRange[1] : null;
     const hasSelectedDates = Boolean(dateRange[0] || dateRange[1]);
 
+    const handleDateRangeChange = (nextRange: [string | null, string | null]) => {
+        setDateRange(nextRange);
+
+        if (nextRange[0] && nextRange[1]) {
+            requestAnimationFrame(() => {
+                apartmentsRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'});
+            });
+        }
+    };
+
     const {data: apartments, isLoading, isError, error} = useQuery({
         queryKey:['apartments', searchStart, searchEnd],
+        placeholderData: keepPreviousData,
         queryFn: () => {
             if (searchStart && searchEnd){
                 return searchApartments(searchStart, searchEnd)
@@ -53,7 +65,7 @@ export const Home = () => {
             .slice(0, 8);
     }, [apartments]);
 
-    if (isLoading) return <Container className={classes.wrapper}>Loading...</Container>;
+    if (isLoading && !apartments) return <Container className={classes.wrapper}>Loading...</Container>;
     if (isError) return <Container className={classes.wrapper}>Error: {(error as Error).message}</Container>;
 
     return (
@@ -110,7 +122,7 @@ export const Home = () => {
                             type="range"
                             allowSingleDateInRange
                             value={dateRange}
-                            onChange={setDateRange}
+                            onChange={handleDateRangeChange}
                             minDate={new Date()}
                             classNames={{ day: classes.day }}
                         />
@@ -121,7 +133,7 @@ export const Home = () => {
                 </Paper>
             </section>
 
-            <section className={classes.section} id="apartments-grid">
+            <section className={classes.section} id="apartments-grid" ref={apartmentsRef}>
                 <Title order={2} mb={"lg"}>Grid with Apartments</Title>
 
                 <SimpleGrid cols={{base: 1, sm: 2, md: 3, lg: 4}} spacing={"lg"}>

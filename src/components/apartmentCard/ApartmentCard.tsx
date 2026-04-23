@@ -8,10 +8,22 @@ interface Props {
     apartment: Apartment;
 }
 
+const formatPriceCzk = (value?: string): string | null => {
+    if (!value) return null;
+
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) {
+        return `${value} CZK`;
+    }
+
+    return `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(numeric)} CZK`;
+};
+
 export const ApartmentCard = ({ apartment }: Props) => {
     const coverImage = apartment.photos && apartment.photos.length > 0
         ? apartment.photos[0].photo
         : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; // ЗАГЛУШКА ВРЕМЕННО
+    const formattedPrice = formatPriceCzk(apartment.total_price);
 
     return (
         <Card
@@ -56,10 +68,10 @@ export const ApartmentCard = ({ apartment }: Props) => {
 
                 <Group gap={6} align="baseline">
                     <Text fw={700} c="dark">
-                        {apartment.total_price ? `${apartment.total_price}` : 'Price for request'}
+                        {formattedPrice ?? 'Price on request'}
                     </Text>
                     <Text size="sm" c="dimmed">
-                        {apartment.total_price ? 'for choose dates' : ''}
+                        {formattedPrice ? 'for selected dates' : ''}
                     </Text>
                 </Group>
             </div>

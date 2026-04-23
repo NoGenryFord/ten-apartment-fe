@@ -13,19 +13,19 @@ export function HeroText({onReservationClick}:HeroTextProps) {
                 <div className={classes.content}>
                     <div className={classes.left}>
                         <Title className={classes.title}>
-                            Find{' '}
+                            Find your{' '}
                             <span className={classes.highlight}>
-                                best apartment
+                                perfect apartment
                             </span>{' '}
-                            in all Prague
+                            in Prague
                         </Title>
 
                         <Text size="lg" c="dimmed" className={classes.description}>
-                            Discover the finest apartments in Prague. Rent directly from owners and save on commissions.
+                            Explore handpicked stays in the best neighborhoods, compare options quickly, and book with confidence.
                         </Text>
 
                         <Button size="lg" radius="xl" onClick={onReservationClick} className={classes.reserveBtn}>
-                            Reservation
+                            Choose dates
                         </Button>
                     </div>
                 </div>
