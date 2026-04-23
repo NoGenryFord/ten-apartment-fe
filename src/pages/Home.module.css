@@ -30,6 +30,12 @@
 
 .calendarCard {
 	max-width: 460px;
+	margin-inline: auto;
+}
+
+.calendarPickerWrap {
+	display: flex;
+	justify-content: center;
 }
 
 .day[data-selected] {
