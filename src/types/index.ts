@@ -22,6 +22,7 @@ export interface Apartment {
     videos: ApartmentVideo[];
     url_obj: string;
     total_price?: string;
+    today_price?: string | null;
     // Optional fields — add to Django serializer fields[] to enable
     max_guests?: number;
     address?: string;

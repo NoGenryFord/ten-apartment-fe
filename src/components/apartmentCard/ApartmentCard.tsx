@@ -24,7 +24,9 @@ export const ApartmentCard = ({ apartment, dateRange }: Props) => {
     const coverImage = apartment.photos && apartment.photos.length > 0
         ? apartment.photos[0].photo
         : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; // ЗАГЛУШКА ВРЕМЕННО
-    const formattedPrice = formatPriceCzk(apartment.total_price);
+    const hasSelectedDates = Boolean(dateRange?.[0] && dateRange?.[1]);
+    const priceSource = hasSelectedDates ? apartment.total_price : apartment.today_price ?? undefined;
+    const formattedPrice = formatPriceCzk(priceSource);
 
     const buildPath = () => {
         let path = `/apartment/${apartment.id}`;
@@ -80,7 +82,7 @@ export const ApartmentCard = ({ apartment, dateRange }: Props) => {
                         {formattedPrice ?? 'Price on request'}
                     </Text>
                     <Text size="sm" c="dimmed">
-                        {formattedPrice ? 'for selected dates' : ''}
+                        {formattedPrice ? (hasSelectedDates ? 'for selected dates' : 'today') : ''}
                     </Text>
                 </Group>
             </div>
