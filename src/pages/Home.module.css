@@ -28,42 +28,4 @@
 	}
 }
 
-.calendarCard {
-	max-width: 460px;
-	margin-inline: auto;
-}
-
-.calendarPickerWrap {
-	display: flex;
-	justify-content: center;
-}
-
-.day[data-selected] {
-	background-color: var(--mantine-color-blue-6) !important;
-	color: white !important;
-	border-radius: var(--mantine-radius-sm) !important;
-}
-
-.day[data-in-range] {
-	background-color: var(--mantine-color-blue-1) !important;
-	color: var(--mantine-color-blue-9) !important;
-	border-radius: 0 !important;
-}
-
-.day[data-first-in-range] {
-	background-color: var(--mantine-color-blue-6) !important;
-	color: white !important;
-	border-radius: var(--mantine-radius-sm) 0 0 var(--mantine-radius-sm) !important;
-}
-
-.day[data-last-in-range] {
-	background-color: var(--mantine-color-blue-6) !important;
-	color: white !important;
-	border-radius: 0 var(--mantine-radius-sm) var(--mantine-radius-sm) 0 !important;
-}
-
-.day:not([data-disabled]):not([data-selected]):not([data-in-range]):hover {
-	background-color: var(--mantine-color-blue-1);
-}
-
 

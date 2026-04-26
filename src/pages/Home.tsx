@@ -2,10 +2,8 @@ import {useMemo, useRef, useState} from "react";
 import {keepPreviousData, useQuery} from "@tanstack/react-query";
 
 // import mantine
-import {CloseButton, Container, Group, Image, Paper, SimpleGrid, Text, Title} from '@mantine/core';
+import {Container, Image, Paper, SimpleGrid, Text, Title} from '@mantine/core';
 import {Carousel} from '@mantine/carousel';
-import {DatePicker} from "@mantine/dates";
-import '@mantine/dates/styles.css';
 import '@mantine/carousel/styles.css';
 
 // import page style
@@ -18,6 +16,7 @@ import {ApartmentCard} from "../components/apartmentCard/ApartmentCard.tsx";
 import {getApartments, searchApartments} from "../features/apartments/api.ts";
 import {ActiveBookingNotice} from "../components/activeBooking/ActiveBookingNotice.tsx";
 import {getActiveBookingDraft} from "../features/booking/storage.ts";
+import {HomeDateRangeCalendar} from "../components/homeDateRangeCalendar/HomeDateRangeCalendar";
 
 export const Home = () => {
 
@@ -108,29 +107,12 @@ export const Home = () => {
 
             <section className={classes.section} ref={calendarRef}>
                 <Title order={2} mb="lg">Calendar</Title>
-                <Paper withBorder radius="md" p="lg" className={classes.calendarCard}>
-                    <Group justify="flex-end" mb="xs">
-                        <CloseButton
-                            onClick={() => setDateRange([null, null])}
-                            disabled={!hasSelectedDates}
-                            aria-label="Clear selected dates"
-                            title="Clear selected dates"
-                        />
-                    </Group>
-                    <div className={classes.calendarPickerWrap}>
-                        <DatePicker
-                            type="range"
-                            allowSingleDateInRange
-                            value={dateRange}
-                            onChange={handleDateRangeChange}
-                            minDate={new Date()}
-                            classNames={{ day: classes.day }}
-                        />
-                    </div>
-                    <Text size="xs" c="dimmed" mt="sm">
-                        Select check-in and check-out dates to filter apartments.
-                    </Text>
-                </Paper>
+                <HomeDateRangeCalendar
+                    value={dateRange}
+                    hasSelectedDates={hasSelectedDates}
+                    onChange={handleDateRangeChange}
+                    onClear={() => setDateRange([null, null])}
+                />
             </section>
 
             <section className={classes.section} id="apartments-grid" ref={apartmentsRef}>

@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 
 import {
     Container, Title, Text, Badge, Group, Stack,
-    Grid, Paper, Loader, Center, Anchor, Divider, Button, Alert,
+    Grid, Paper, Loader, Center, Anchor, Divider, Button, Alert, CloseButton,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { Carousel } from '@mantine/carousel';
@@ -39,6 +39,7 @@ export const ApartmentDetail = () => {
         initialEnd,
     ]);
     const [rangeError, setRangeError] = useState<string | null>(null);
+    const hasSelectedDates = Boolean(dateRange[0] || dateRange[1]);
 
     const { data: apartment, isLoading, isError } = useQuery({
         queryKey: ['apartment', apartmentId],
@@ -265,6 +266,18 @@ export const ApartmentDetail = () => {
                                 <div className={classes.legendDay} data-variant="selected">15</div>
                                 <Text size="xs" c="dimmed">Selected</Text>
                             </Group>
+                        </Group>
+
+                        <Group justify="flex-end" mb="xs">
+                            <CloseButton
+                                onClick={() => {
+                                    setDateRange([null, null]);
+                                    setRangeError(null);
+                                }}
+                                disabled={!hasSelectedDates}
+                                aria-label="Clear selected dates"
+                                title="Clear selected dates"
+                            />
                         </Group>
 
                         {isScheduleLoading ? (
