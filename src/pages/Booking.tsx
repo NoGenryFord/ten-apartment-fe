@@ -19,7 +19,13 @@ import {
 } from '@mantine/core';
 
 import { HeaderSimple } from '../components/headersimple/HeaderSimple';
-import { cancelBookingPayment, createBooking, getApartmentById, startBookingPayment } from '../features/apartments/api';
+import {
+    cancelBookingPayment,
+    createBooking,
+    getApartmentById,
+    startBookingPayment,
+    submitBookingPaymentResult,
+} from '../features/apartments/api';
 import {
     clearActiveBookingDraft,
     getActiveBookingDraft,
@@ -51,6 +57,7 @@ export const Booking = () => {
     const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [activeBookingId, setActiveBookingId] = useState<number | null>(null);
+    const [paymentStateMessage, setPaymentStateMessage] = useState<string | null>(null);
 
     useEffect(() => {
         const savedBooking = getActiveBookingDraft();
@@ -106,9 +113,37 @@ export const Booking = () => {
         onSuccess: () => {
             clearActiveBookingDraft();
             setActiveBookingId(null);
+            setPaymentStateMessage(null);
+            startPaymentMutation.reset();
         },
         onError: (error) => {
             const fallback = 'Could not cancel this booking now.';
+            const message = error instanceof Error ? error.message : fallback;
+            setErrorMessage(message || fallback);
+        },
+    });
+
+    const completePaymentMutation = useMutation({
+        mutationFn: ({
+            bookingId,
+            result,
+        }: {
+            bookingId: number;
+            result: 'success' | 'failed';
+        }) => submitBookingPaymentResult(bookingId, result),
+        onSuccess: (result) => {
+            clearActiveBookingDraft();
+            setActiveBookingId(null);
+            setErrorMessage(null);
+            setPaymentStateMessage(
+                result.status === 'confirmed'
+                    ? `Payment successful. Booking #${result.booking_id} is confirmed.`
+                    : `Payment failed. Booking #${result.booking_id} was canceled.`,
+            );
+            startPaymentMutation.reset();
+        },
+        onError: (error) => {
+            const fallback = 'Could not complete payment right now.';
             const message = error instanceof Error ? error.message : fallback;
             setErrorMessage(message || fallback);
         },
@@ -272,22 +307,54 @@ export const Booking = () => {
                                 </Alert>
                             )}
 
-                            <Button
-                                fullWidth
-                                size="md"
-                                loading={isSubmitting}
-                                disabled={!firstName.trim() || !lastName.trim() || !email.trim()}
-                                onClick={() => createBookingMutation.mutate()}
-                            >
-                                Confirm booking
-                            </Button>
+                            {paymentStateMessage && (
+                                <Alert color="green" title="Payment result">
+                                    {paymentStateMessage}
+                                </Alert>
+                            )}
+
+                            {!canCancelBookingId && (
+                                <Button
+                                    fullWidth
+                                    size="md"
+                                    loading={isSubmitting}
+                                    disabled={!firstName.trim() || !lastName.trim() || !email.trim()}
+                                    onClick={() => createBookingMutation.mutate()}
+                                >
+                                    Confirm booking
+                                </Button>
+                            )}
+
+                            {canCancelBookingId && (
+                                <>
+                                    <Button
+                                        color="teal"
+                                        fullWidth
+                                        loading={completePaymentMutation.isPending}
+                                        onClick={() => completePaymentMutation.mutate({ bookingId: canCancelBookingId, result: 'success' })}
+                                    >
+                                        Pay now (test success)
+                                    </Button>
+
+                                    <Button
+                                        variant="light"
+                                        color="orange"
+                                        fullWidth
+                                        loading={completePaymentMutation.isPending}
+                                        onClick={() => completePaymentMutation.mutate({ bookingId: canCancelBookingId, result: 'failed' })}
+                                    >
+                                        Simulate payment fail
+                                    </Button>
+
+                                </>
+                            )}
 
                             {canCancelBookingId && (
                                 <Button
                                     variant="light"
                                     color="red"
                                     fullWidth
-                                    loading={cancelBookingMutation.isPending}
+                                    loading={cancelBookingMutation.isPending || completePaymentMutation.isPending}
                                     onClick={() => cancelBookingMutation.mutate(canCancelBookingId)}
                                 >
                                     Cancel this booking

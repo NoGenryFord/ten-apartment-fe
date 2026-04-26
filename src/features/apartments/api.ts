@@ -35,6 +35,12 @@ interface CancelBookingResponse {
     status: string;
 }
 
+interface PaymentResultResponse {
+    message: string;
+    booking_id: number;
+    status: string;
+}
+
 export const getApartments = async (): Promise<Apartment[]> => {
     const { data } = await api.get<Apartment[]>('apartments/');
     return data;
@@ -74,5 +80,13 @@ export const startBookingPayment = async (
 
 export const cancelBookingPayment = async (bookingId: number): Promise<CancelBookingResponse> => {
     const { data } = await api.post<CancelBookingResponse>(`bookings/${bookingId}/cancel_payment/`);
+    return data;
+};
+
+export const submitBookingPaymentResult = async (
+    bookingId: number,
+    result: 'success' | 'failed',
+): Promise<PaymentResultResponse> => {
+    const { data } = await api.post<PaymentResultResponse>(`bookings/${bookingId}/payment_result/`, { result });
     return data;
 };
