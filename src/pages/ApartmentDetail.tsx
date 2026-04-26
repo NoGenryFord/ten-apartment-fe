@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 
 import {
     Container, Title, Text, Badge, Group, Stack,
-    Grid, Paper, Loader, Center, Anchor, Divider, Button,
+    Grid, Paper, Loader, Center, Anchor, Divider, Button, Alert,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { Carousel } from '@mantine/carousel';
@@ -38,6 +38,7 @@ export const ApartmentDetail = () => {
         initialStart,
         initialEnd,
     ]);
+    const [rangeError, setRangeError] = useState<string | null>(null);
 
     const { data: apartment, isLoading, isError } = useQuery({
         queryKey: ['apartment', apartmentId],
@@ -57,9 +58,49 @@ export const ApartmentDetail = () => {
         return Object.fromEntries(schedules.map(s => [s.date, s]));
     }, [schedules]);
 
+    const isRangeAvailable = (start: string, end: string): boolean => {
+        let current = dayjs(start);
+        const checkout = dayjs(end);
+
+        // checkout day is not charged/checked, so validate [start, end)
+        while (current.isBefore(checkout)) {
+            const entry = scheduleMap[current.format('YYYY-MM-DD')];
+            if (entry?.status !== 'available') {
+                return false;
+            }
+            current = current.add(1, 'day');
+        }
+
+        return true;
+    };
+
+    const handleDateRangeChange = (nextRange: [string | null, string | null]) => {
+        const [start, end] = nextRange;
+
+        if (!start || !end) {
+            setRangeError(null);
+            setDateRange(nextRange);
+            return;
+        }
+
+        if (!isRangeAvailable(start, end)) {
+            setRangeError('Selected range includes unavailable dates. Please choose other dates.');
+            setDateRange([start, null]);
+            return;
+        }
+
+        setRangeError(null);
+        setDateRange(nextRange);
+    };
+
     // Total price + nights count for selected range
-    const { totalPrice, nights } = useMemo(() => {
-        if (!dateRange[0] || !dateRange[1]) return { totalPrice: null, nights: 0 };
+    const { totalPrice, nights, isRangeValid } = useMemo(() => {
+        if (!dateRange[0] || !dateRange[1]) return { totalPrice: null, nights: 0, isRangeValid: false };
+
+        if (!isRangeAvailable(dateRange[0], dateRange[1])) {
+            return { totalPrice: null, nights: 0, isRangeValid: false };
+        }
+
         let total = 0;
         let count = 0;
         let current = dayjs(dateRange[0]);
@@ -71,7 +112,7 @@ export const ApartmentDetail = () => {
             count++;
             current = current.add(1, 'day');
         }
-        return { totalPrice: total, nights: count };
+        return { totalPrice: total, nights: count, isRangeValid: true };
     }, [dateRange, scheduleMap]);
 
     // ─── Loading / Error states ───────────────────────────────────
@@ -232,7 +273,7 @@ export const ApartmentDetail = () => {
                             <DatePicker
                                 type="range"
                                 value={dateRange}
-                                onChange={setDateRange}
+                                onChange={handleDateRangeChange}
                                 minDate={new Date()}
                                 getDayProps={(date) => {
                                     const dateStr = dayjs(date).format('YYYY-MM-DD');
@@ -255,8 +296,14 @@ export const ApartmentDetail = () => {
                             />
                         )}
 
+                        {rangeError && (
+                            <Alert mt="md" color="red" title="Invalid range">
+                                {rangeError}
+                            </Alert>
+                        )}
+
                         {/* Price summary */}
-                        {dateRange[0] && dateRange[1] ? (
+                        {dateRange[0] && dateRange[1] && isRangeValid ? (
                             <>
                                 <Divider my="lg" />
                                 <Stack gap="sm">

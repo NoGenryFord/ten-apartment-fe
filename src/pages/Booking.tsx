@@ -137,10 +137,14 @@ export const Booking = () => {
             setErrorMessage(null);
             setPaymentStateMessage(
                 result.status === 'confirmed'
-                    ? `Payment successful. Booking #${result.booking_id} is confirmed.`
-                    : `Payment failed. Booking #${result.booking_id} was canceled.`,
+                    ? 'Payment successful. Your booking is confirmed.'
+                    : 'Payment failed. Please try again.',
             );
             startPaymentMutation.reset();
+
+            if (result.status === 'confirmed') {
+                navigate('/');
+            }
         },
         onError: (error) => {
             const fallback = 'Could not complete payment right now.';
@@ -299,11 +303,7 @@ export const Booking = () => {
 
                             {paymentResult && (
                                 <Alert color="green" title="Booking created">
-                                    <Stack gap={4}>
-                                        <Text size="sm">Booking ID: {paymentResult.booking_id}</Text>
-                                        <Text size="sm">Status: {paymentResult.status}</Text>
-                                        <Text size="sm">Payment URL: {paymentResult.payment_url}</Text>
-                                    </Stack>
+                                    Your reservation is created. Please complete payment to confirm it.
                                 </Alert>
                             )}
 
