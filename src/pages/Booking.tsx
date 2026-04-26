@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
+import { Carousel } from '@mantine/carousel';
+import '@mantine/carousel/styles.css';
 
 import {
     Alert,
@@ -19,23 +21,36 @@ import {
 } from '@mantine/core';
 
 import { HeaderSimple } from '../components/headersimple/HeaderSimple';
+
 import {
     cancelBookingPayment,
     createBooking,
     getApartmentById,
+    getApartmentSchedule,
     startBookingPayment,
     submitBookingPaymentResult,
 } from '../features/apartments/api';
+
 import {
     clearActiveBookingDraft,
     getActiveBookingDraft,
     saveActiveBookingDraft,
 } from '../features/booking/storage';
+
 import classes from './Booking.module.css';
+
+import {ApartmentMap} from "../components/apartamentMap/ApartamentMap";
+
 
 const isValidDate = (value: string | null): value is string => {
     if (!value) return false;
     return dayjs(value, 'YYYY-MM-DD', true).isValid();
+};
+
+const parseCoordinate = (value?: number | string): number | null => {
+    if (value === undefined || value === null || value === '') return null;
+    const parsed = typeof value === 'number' ? value : Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
 };
 
 export const Booking = () => {
@@ -59,6 +74,7 @@ export const Booking = () => {
     const [activeBookingId, setActiveBookingId] = useState<number | null>(null);
     const [paymentStateMessage, setPaymentStateMessage] = useState<string | null>(null);
 
+
     useEffect(() => {
         const savedBooking = getActiveBookingDraft();
         if (!savedBooking) return;
@@ -79,12 +95,43 @@ export const Booking = () => {
         enabled: hasValidQuery,
     });
 
+    const { data: schedule } = useQuery({
+        queryKey: ['booking-schedule', apartmentId],
+        queryFn: () => getApartmentSchedule(apartmentId),
+        enabled: hasValidQuery,
+    });
+
+    const scheduleMap = useMemo(() => {
+        if (!schedule) return {} as Record<string, { price_value: string }>;
+        return Object.fromEntries(schedule.map((entry) => [entry.date, entry]));
+    }, [schedule]);
+
     const { nights } = useMemo(() => {
         if (!hasValidQuery || !startDate || !endDate) return { nights: 0 };
         return {
             nights: dayjs(endDate).diff(dayjs(startDate), 'day'),
         };
     }, [endDate, hasValidQuery, startDate]);
+
+    const estimatedTotal = useMemo(() => {
+        if (!hasValidQuery || !startDate || !endDate) return null;
+
+        let total = 0;
+        let current = dayjs(startDate);
+        const checkout = dayjs(endDate);
+
+        // Checkout day is not charged, so calculate in [start, end) range.
+        while (current.isBefore(checkout)) {
+            const day = scheduleMap[current.format('YYYY-MM-DD')];
+            if (!day?.price_value) {
+                return null;
+            }
+            total += parseFloat(day.price_value);
+            current = current.add(1, 'day');
+        }
+
+        return total;
+    }, [endDate, hasValidQuery, scheduleMap, startDate]);
 
     const startPaymentMutation = useMutation({
         mutationFn: (bookingId: number) => startBookingPayment(bookingId, {
@@ -230,6 +277,9 @@ export const Booking = () => {
     const isSubmitting = createBookingMutation.isPending || startPaymentMutation.isPending;
     const paymentResult = startPaymentMutation.data;
     const canCancelBookingId = activeBookingId ?? paymentResult?.booking_id;
+    const latitude = parseCoordinate(apartment.latitude);
+    const longitude = parseCoordinate(apartment.longitude);
+    const hasCoordinates = latitude !== null && longitude !== null;
 
     return (
         <Container size="xl" py="xl">
@@ -258,11 +308,42 @@ export const Booking = () => {
                                 <Text c="dimmed">Nights</Text>
                                 <Text fw={500}>{nights}</Text>
                             </Group>
-                            {apartment.total_price && (
+                            {estimatedTotal !== null && (
                                 <Group justify="space-between">
                                     <Text c="dimmed">Estimated total</Text>
-                                    <Text fw={700}>{apartment.total_price} Kč</Text>
+                                    <Text fw={700}>{estimatedTotal.toFixed(2)} Kč</Text>
                                 </Group>
+                            )}
+                            {apartment.description && (
+                                <Text size="sm" c="dimmed" mt="xs" lineClamp={4}>
+                                    {apartment.description}
+                                </Text>
+                            )}
+
+                            {apartment.photos.length > 0 && (
+                                <>
+                                    <Title order={4} mt="md">Gallery</Title>
+                                    <Carousel
+                                        withIndicators
+                                        withControls
+                                        slideSize="100%"
+                                        emblaOptions={{ loop: true }}
+                                        classNames={{
+                                            root: classes.miniCarousel,
+                                            slide: classes.miniCarouselSlide,
+                                        }}
+                                    >
+                                        {apartment.photos.map((photo) => (
+                                            <Carousel.Slide key={photo.id}>
+                                                <img
+                                                    src={photo.photo}
+                                                    alt={apartment.name}
+                                                    className={classes.miniCarouselImage}
+                                                />
+                                            </Carousel.Slide>
+                                        ))}
+                                    </Carousel>
+                                </>
                             )}
                         </Stack>
                     </Paper>
@@ -370,6 +451,23 @@ export const Booking = () => {
                             </Button>
                         </Stack>
                     </Paper>
+                </Grid.Col>
+                <Grid.Col span={12}>
+
+                        <Paper p="xl" radius="md" withBorder mt="xl">
+                            <Title order={3} mb="md">Location</Title>
+                            {hasCoordinates ? (
+                                <ApartmentMap
+                                    latitude={latitude}
+                                    longitude={longitude}
+                                    name={apartment.name}
+                                    address={apartment.address}
+                                />
+                            ) : (
+                                <Text c="dimmed">Location is not available yet.</Text>
+                            )}
+                        </Paper>
+
                 </Grid.Col>
             </Grid>
         </Container>

@@ -45,7 +45,7 @@ export const ApartmentMap = ({ latitude, longitude, name, address }: ApartmentMa
         <MapContainer
             center={[latitude, longitude]}
             zoom={15}
-            scrollWheelZoom={false}
+            scrollWheelZoom={true}
             style={{ height: '320px', width: '100%', borderRadius: '8px', zIndex: 0 }}
         >
             {/* Carto Voyager — no API key needed */}
