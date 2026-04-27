@@ -1,37 +1,16 @@
-import { useState } from 'react';
-import { Burger, Container, Divider, Drawer, Group, ScrollArea } from '@mantine/core';
+import { Burger, Button, Container, Divider, Drawer, Group, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
 import classes from './HeaderSimple.module.css';
-
-const links = [
-    { link: '/about', label: 'Features' },
-    { link: '/pricing', label: 'Pricing' },
-    { link: '/learn', label: 'Learn' },
-    { link: '/community', label: 'Community' },
-];
+import { clearAuthSession, getAuthUser, isAuthenticated } from '../../features/auth/storage';
 
 export function HeaderSimple() {
     const [opened, { toggle, close }] = useDisclosure(false);
-    const [active, setActive] = useState(links[0].link);
+    const user = getAuthUser();
+    const loggedIn = isAuthenticated();
 
     // Logo
     const logoUrl: string = '/fin-logo.png'
-
-    const items = links.map((link) => (
-        <a
-            key={link.label}
-            href={link.link}
-            className={classes.link}
-            data-active={active === link.link || undefined}
-            onClick={(event) => {
-                event.preventDefault();
-                setActive(link.link);
-            }}
-        >
-            {link.label}
-        </a>
-    ));
 
     return (
         <header className={classes.header}>
@@ -39,8 +18,26 @@ export function HeaderSimple() {
                 <Link to="/" aria-label="Go to home page">
                     <img src={logoUrl ? logoUrl : logoUrl} alt="logo" className={classes.logo}/>
                 </Link>
-                <Group gap={5} visibleFrom="xs">
-                    {items}
+
+                <Group gap={8} visibleFrom="xs">
+                    <Button component={Link} to="/" variant="subtle" color="dark" className={classes.linkButton}>
+                        Home
+                    </Button>
+                    <Button component={Link} to="/account" variant="light" color="blue">
+                        {loggedIn ? 'My account' : 'Login'}
+                    </Button>
+                    {loggedIn && (
+                        <Button
+                            variant="subtle"
+                            color="red"
+                            onClick={() => {
+                                clearAuthSession();
+                                window.location.href = '/';
+                            }}
+                        >
+                            Logout
+                        </Button>
+                    )}
                 </Group>
 
                 <Burger
@@ -63,7 +60,22 @@ export function HeaderSimple() {
             >
                 <ScrollArea h="calc(100vh - 80px)" mx="-md">
                     <Divider my="sm" />
-                    {items}
+                    <Link to="/" className={classes.link} onClick={close}>Home</Link>
+                    <Link to="/account" className={classes.link} onClick={close}>
+                        {loggedIn ? 'My account' : 'Login'}
+                    </Link>
+                    {loggedIn && (
+                        <button
+                            type="button"
+                            className={classes.linkAsButton}
+                            onClick={() => {
+                                clearAuthSession();
+                                window.location.href = '/';
+                            }}
+                        >
+                            Logout {user?.email ? `(${user.email})` : ''}
+                        </button>
+                    )}
                 </ScrollArea>
             </Drawer>
         </header>

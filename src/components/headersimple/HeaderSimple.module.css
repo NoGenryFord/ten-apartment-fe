@@ -43,3 +43,25 @@
         color: var(--mantine-color-white);
     }
 }
+
+.linkButton {
+    font-weight: 500;
+}
+
+.linkAsButton {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    line-height: 1;
+    padding: var(--mantine-spacing-md);
+    border-radius: 0;
+    color: var(--mantine-color-red-6);
+    font-size: var(--mantine-font-size-sm);
+    cursor: pointer;
+}
+
+.linkAsButton:hover {
+    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}

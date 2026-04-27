@@ -13,7 +13,7 @@ const api = axios.create({
     },
 });
 
-//Перехватчик для JWT
+// Attach access token to every request
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('accessToken');
     if (token) {
@@ -21,5 +21,60 @@ api.interceptors.request.use((config) => {
     }
     return config;
 });
+
+// On 401 — try to refresh the access token once, then retry
+let isRefreshing = false;
+let failedQueue: Array<{ resolve: (value: unknown) => void; reject: (reason?: unknown) => void }> = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+    failedQueue.forEach((p) => (error ? p.reject(error) : p.resolve(token)));
+    failedQueue = [];
+};
+
+api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+
+        if (error.response?.status !== 401 || originalRequest._retry) {
+            return Promise.reject(error);
+        }
+
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (!refreshToken) {
+            return Promise.reject(error);
+        }
+
+        if (isRefreshing) {
+            return new Promise((resolve, reject) => {
+                failedQueue.push({ resolve, reject });
+            }).then((token) => {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                return api(originalRequest);
+            });
+        }
+
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        try {
+            const { data } = await axios.post(`${BASE_URL}/token/refresh/`, { refresh: refreshToken });
+            localStorage.setItem('accessToken', data.access);
+            api.defaults.headers.common.Authorization = `Bearer ${data.access}`;
+            processQueue(null, data.access);
+            originalRequest.headers.Authorization = `Bearer ${data.access}`;
+            return api(originalRequest);
+        } catch (refreshError) {
+            processQueue(refreshError, null);
+            // Refresh token is expired — clear session
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('authUser');
+            return Promise.reject(refreshError);
+        } finally {
+            isRefreshing = false;
+        }
+    },
+);
 
 export default api;

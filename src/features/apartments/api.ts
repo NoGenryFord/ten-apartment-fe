@@ -1,5 +1,6 @@
 import api from '../../api/api';
 import type { Apartment, Schedule } from '../../types';
+import type { AuthSession } from '../auth/storage';
 
 interface CreateBookingPayload {
     apartment_id: number;
@@ -27,6 +28,7 @@ interface StartPaymentResponse {
     booking_id: number;
     status: string;
     reserved_until: string | null;
+    auth?: AuthSession;
 }
 
 interface CancelBookingResponse {

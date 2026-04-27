@@ -37,6 +37,7 @@ import {
     getActiveBookingDraft,
     saveActiveBookingDraft,
 } from '../features/booking/storage';
+import { getAuthUser, saveAuthSession } from '../features/auth/storage';
 
 import classes from './Booking.module.css';
 
@@ -68,9 +69,11 @@ export const Booking = () => {
         && isValidDate(endDate)
         && dayjs(startDate).isBefore(dayjs(endDate));
 
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
+    const loggedInUser = useMemo(() => getAuthUser(), []);
+
+    const [firstName, setFirstName] = useState(loggedInUser?.first_name ?? '');
+    const [lastName, setLastName] = useState(loggedInUser?.last_name ?? '');
+    const [email, setEmail] = useState(loggedInUser?.email ?? '');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [activeBookingId, setActiveBookingId] = useState<number | null>(null);
     const [paymentStateMessage, setPaymentStateMessage] = useState<string | null>(null);
@@ -142,6 +145,9 @@ export const Booking = () => {
         }),
         onSuccess: (result) => {
             setActiveBookingId(result.booking_id);
+            if (result.auth) {
+                saveAuthSession(result.auth);
+            }
             if (apartment && startDate && endDate) {
                 saveActiveBookingDraft({
                     bookingId: result.booking_id,
