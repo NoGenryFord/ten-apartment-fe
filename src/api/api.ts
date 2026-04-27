@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import {IPConfigurator} from "./utils";
 
-const configurator = new IPConfigurator();
+const configurator = new IPConfigurator('', '');
 
 const BASE_URL = await configurator.getFirstWorkingUrl(import.meta.env.VITE_API_URL_HOSTS_DEV) || '/api';
 
@@ -16,7 +16,8 @@ const api = axios.create({
 // Attach access token to every request
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('accessToken');
-    if (token) {
+    const hasAuthorizationHeader = Boolean(config.headers?.Authorization || config.headers?.authorization);
+    if (token && !hasAuthorizationHeader) {
         config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

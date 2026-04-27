@@ -18,6 +18,7 @@ import {
     Stack,
     Text,
     TextInput,
+    PasswordInput,
     Title,
 } from '@mantine/core';
 
@@ -37,7 +38,7 @@ import {
     getActiveBookingDraft,
     saveActiveBookingDraft,
 } from '../features/booking/storage';
-import { getAuthUser, saveAuthSession } from '../features/auth/storage';
+import { getAuthUser, isAuthenticated, saveAuthSession } from '../features/auth/storage';
 
 import classes from './Booking.module.css';
 
@@ -70,10 +71,12 @@ export const Booking = () => {
         && dayjs(startDate).isBefore(dayjs(endDate));
 
     const loggedInUser = useMemo(() => getAuthUser(), []);
+    const loggedIn = useMemo(() => isAuthenticated(), []);
 
     const [firstName, setFirstName] = useState(loggedInUser?.first_name ?? '');
     const [lastName, setLastName] = useState(loggedInUser?.last_name ?? '');
     const [email, setEmail] = useState(loggedInUser?.email ?? '');
+    const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [activeBookingId, setActiveBookingId] = useState<number | null>(null);
     const [paymentStateMessage, setPaymentStateMessage] = useState<string | null>(null);
@@ -142,6 +145,7 @@ export const Booking = () => {
             email,
             first_name: firstName,
             last_name: lastName,
+            password: loggedIn ? undefined : password,
         }),
         onSuccess: (result) => {
             setActiveBookingId(result.booking_id);
@@ -392,6 +396,15 @@ export const Booking = () => {
                                 onChange={(event) => setEmail(event.currentTarget.value)}
                                 required
                             />
+                            {!loggedIn && (
+                                <PasswordInput
+                                    label="Password"
+                                    placeholder="At least 8 characters"
+                                    value={password}
+                                    onChange={(event) => setPassword(event.currentTarget.value)}
+                                    required
+                                />
+                            )}
 
                             {errorMessage && (
                                 <Alert color="red" title="Booking error">
@@ -416,7 +429,7 @@ export const Booking = () => {
                                     fullWidth
                                     size="md"
                                     loading={isSubmitting}
-                                    disabled={!firstName.trim() || !lastName.trim() || !email.trim()}
+                                    disabled={!firstName.trim() || !lastName.trim() || !email.trim() || (!loggedIn && password.trim().length < 8)}
                                     onClick={() => createBookingMutation.mutate()}
                                 >
                                     Confirm booking

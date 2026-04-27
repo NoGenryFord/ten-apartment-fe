@@ -23,7 +23,7 @@ export function HeaderSimple() {
                     <Button component={Link} to="/" variant="subtle" color="dark" className={classes.linkButton}>
                         Home
                     </Button>
-                    <Button component={Link} to="/account" variant="light" color="blue">
+                    <Button component={Link} to={loggedIn ? '/account' : '/login'} variant="light" color="blue">
                         {loggedIn ? 'My account' : 'Login'}
                     </Button>
                     {loggedIn && (
@@ -61,7 +61,7 @@ export function HeaderSimple() {
                 <ScrollArea h="calc(100vh - 80px)" mx="-md">
                     <Divider my="sm" />
                     <Link to="/" className={classes.link} onClick={close}>Home</Link>
-                    <Link to="/account" className={classes.link} onClick={close}>
+                    <Link to={loggedIn ? '/account' : '/login'} className={classes.link} onClick={close}>
                         {loggedIn ? 'My account' : 'Login'}
                     </Link>
                     {loggedIn && (

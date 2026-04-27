@@ -57,9 +57,12 @@ export const Account = () => {
                 <Paper withBorder p="xl" radius="md">
                     <Title order={2} mb="sm">User account</Title>
                     <Text c="dimmed" mb="lg">
-                        You are not logged in yet. Create a reservation to auto-login and open your account.
+                        You are not logged in yet. Please login to access your account.
                     </Text>
-                    <Button component={Link} to="/" variant="light">Back to apartments</Button>
+                    <Group>
+                        <Button component={Link} to="/login">Login</Button>
+                        <Button component={Link} to="/" variant="light">Back to apartments</Button>
+                    </Group>
                 </Paper>
             </Container>
         );
