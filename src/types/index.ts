@@ -3,6 +3,11 @@ export interface ApartmentType {
     name: string;
 }
 
+export interface Tag {
+    id: number;
+    name: string;
+}
+
 export interface ApartmentPhoto {
     id: number;
     photo: string;
@@ -17,6 +22,7 @@ export interface Apartment {
     id: number;
     name: string;
     type: ApartmentType;
+    tags: Tag[];
     description: string;
     photos: ApartmentPhoto[];
     videos: ApartmentVideo[];

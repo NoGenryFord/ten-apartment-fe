@@ -209,6 +209,16 @@ export const ApartmentDetail = () => {
                             {apartment.description}
                         </Text>
 
+                        {apartment.tags.length > 0 && (
+                            <Group gap={10} mt="md" wrap="wrap">
+                                {apartment.tags.map((tag) => (
+                                    <Badge key={tag.id} variant="light" color="gray" size="md">
+                                        {tag.name}
+                                    </Badge>
+                                ))}
+                            </Group>
+                        )}
+
                         {/* max_guests / address — visible when backend serializer returns them */}
                         {(apartment.max_guests || apartment.address) && (
                             <>

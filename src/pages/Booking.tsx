@@ -8,6 +8,7 @@ import '@mantine/carousel/styles.css';
 import {
     Alert,
     Anchor,
+    Badge,
     Button,
     Container,
     Grid,
@@ -318,6 +319,16 @@ export const Booking = () => {
                                 <Text size="sm" c="dimmed" mt="xs" lineClamp={4}>
                                     {apartment.description}
                                 </Text>
+                            )}
+
+                            {apartment.tags.length > 0 && (
+                                <Group gap={10} mt="xs" wrap="wrap">
+                                    {apartment.tags.map((tag) => (
+                                        <Badge key={tag.id} color="gray" variant="light" size="md">
+                                            {tag.name}
+                                        </Badge>
+                                    ))}
+                                </Group>
                             )}
 
                             {apartment.photos.length > 0 && (

@@ -77,6 +77,21 @@ export const ApartmentCard = ({ apartment, dateRange }: Props) => {
                     {apartment.description}
                 </Text>
 
+                {apartment.tags.length > 0 && (
+                    <Group gap={8} mb={6}>
+                        {apartment.tags.slice(0, 3).map((tag) => (
+                            <Badge key={tag.id} variant="light" color="gray" size="sm">
+                                {tag.name}
+                            </Badge>
+                        ))}
+                        {apartment.tags.length > 3 && (
+                            <Badge variant="outline" color="gray" size="sm">
+                                +{apartment.tags.length - 3}
+                            </Badge>
+                        )}
+                    </Group>
+                )}
+
                 <Group gap={6} align="baseline">
                     <Text fw={700} c="dark">
                         {formattedPrice ?? 'Price on request'}
