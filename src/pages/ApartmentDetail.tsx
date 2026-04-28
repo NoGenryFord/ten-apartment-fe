@@ -14,6 +14,7 @@ import '@mantine/dates/styles.css';
 import '@mantine/carousel/styles.css';
 
 import { HeaderSimple } from '../components/headersimple/HeaderSimple';
+import { ContactForm } from '../components/contactForm/ContactForm';
 import { getApartmentById, getApartmentSchedule } from '../features/apartments/api';
 import type { Schedule } from '../types';
 import classes from './ApartmentDetail.module.css';
@@ -261,6 +262,17 @@ export const ApartmentDetail = () => {
                             <Text c="dark">Location is not available yet.</Text>
                         )}
                     </Paper>
+
+                    <div style={{ marginTop: 24 }}>
+                        <ContactForm
+                            id="apartment-contact-form"
+                            title="Question about this apartment"
+                            description="Send your question and we will contact you with details."
+                            submitLabel="Send question"
+                            apartmentId={apartmentId}
+                            apartmentName={apartment.name}
+                        />
+                    </div>
 
                 </Grid.Col>
 

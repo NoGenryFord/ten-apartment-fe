@@ -93,3 +93,15 @@ export const submitBookingPaymentResult = async (
     const { data } = await api.post<PaymentResultResponse>(`bookings/${bookingId}/payment_result/`, { result });
     return data;
 };
+
+export interface InquiryPayload {
+    name: string;
+    contact: string;
+    message: string;
+    apartment?: number | null;
+}
+
+export const submitInquiry = async (payload: InquiryPayload): Promise<{ id: number }> => {
+    const { data } = await api.post<{ id: number }>('inquiries/', payload);
+    return data;
+};
