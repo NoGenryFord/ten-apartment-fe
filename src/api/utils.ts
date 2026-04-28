@@ -11,13 +11,13 @@ import axios from 'axios';
  * Конфигуратр для простой работы со списком IP в .env
  */
 export class IPConfigurator {
+    protected baseUrl: string;
+    protected envString: string;
 
-
-    constructor (
-        protected baseUrl: string,
-        protected envString: string
-    ) {}
-
+    constructor(baseUrl: string, envString: string) {
+        this.baseUrl = baseUrl;
+        this.envString = envString;
+    }
 
     /**
      * Преобразует строку с IP (через запятую) в массив.
@@ -33,7 +33,7 @@ export class IPConfigurator {
 
 
     public async getFirstWorkingUrl(rawEnvString: string | undefined): Promise<string | null> {
-        const urls: string = this.splitApiStringToArrayList(rawEnvString);
+        const urls: string[] = this.splitApiStringToArrayList(rawEnvString ?? '');
 
         for (const url of urls){
             try{
