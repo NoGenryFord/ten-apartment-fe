@@ -6,6 +6,7 @@ import { Account } from './pages/Account';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Contacts } from './pages/Contacts';
+import { About } from './pages/About';
 import { ScrollToTopButton } from './components/scrollToTop/ScrollToTopButton';
 import { SiteFooter } from './components/siteFooter/SiteFooter';
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/account" element={<Account />} />
         <Route path="/contacts" element={<Contacts />} />
+        <Route path="/about" element={<About />} />
       </Routes>
       <ScrollToTopButton />
       <SiteFooter />
