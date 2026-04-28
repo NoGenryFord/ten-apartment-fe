@@ -34,6 +34,7 @@ export interface Apartment {
     address?: string;
     latitude?: number | string;
     longitude?: number | string;
+    area?: string | null;
 }
 
 export interface Schedule {

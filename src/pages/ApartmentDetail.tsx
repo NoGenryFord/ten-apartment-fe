@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import {
     Container, Title, Text, Badge, Group, Stack,
     Grid, Paper, Loader, Center, Anchor, Divider, Button, Alert, CloseButton,
+    SimpleGrid,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { Carousel } from '@mantine/carousel';
@@ -223,20 +224,26 @@ export const ApartmentDetail = () => {
                         {(apartment.max_guests || apartment.address) && (
                             <>
                                 <Divider my="lg" />
-                                <Stack gap="xs">
-                                    {apartment.max_guests && (
-                                        <Group gap="xs">
-                                            <Text size="sm" fw={600}>👥 Max guests:</Text>
-                                            <Text size="sm" c="dark">{apartment.max_guests}</Text>
-                                        </Group>
+                                <SimpleGrid cols={{ base: 1, xs: 2, sm: 3 }} spacing="sm">
+                                    {apartment.area && (
+                                        <Paper withBorder p="sm" radius="md">
+                                            <Text size="xs" c="dimmed" mb={2}>Area</Text>
+                                            <Text size="sm" fw={600}>{Number(apartment.area).toFixed(0)} m²</Text>
+                                        </Paper>
                                     )}
+                                    {apartment.max_guests ? (
+                                        <Paper withBorder p="sm" radius="md">
+                                            <Text size="xs" c="dimmed" mb={2}>Max guests</Text>
+                                            <Text size="sm" fw={600}>{apartment.max_guests}</Text>
+                                        </Paper>
+                                    ) : null}
                                     {apartment.address && (
-                                        <Group gap="xs">
-                                            <Text size="sm" fw={600}>📍 Address:</Text>
-                                            <Text size="sm" c="dark">{apartment.address}</Text>
-                                        </Group>
+                                        <Paper withBorder p="sm" radius="md">
+                                            <Text size="xs" c="dimmed" mb={2}>Address</Text>
+                                            <Text size="sm" fw={600}>{apartment.address}</Text>
+                                        </Paper>
                                     )}
-                                </Stack>
+                                </SimpleGrid>
                             </>
                         )}
                     </Paper>

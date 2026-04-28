@@ -89,6 +89,21 @@ export const ApartmentCard = ({ apartment, dateRange }: Props) => {
                                 +{apartment.tags.length - 3}
                             </Badge>
                         )}
+
+                                    {(apartment.area || apartment.max_guests) && (
+                                        <Group gap={6} mb={6}>
+                                            {apartment.area && (
+                                                <Badge variant="dot" color="blue" size="sm">
+                                                    {Number(apartment.area).toFixed(0)} m²
+                                                </Badge>
+                                            )}
+                                            {apartment.max_guests ? (
+                                                <Badge variant="dot" color="teal" size="sm">
+                                                    👥 {apartment.max_guests}
+                                                </Badge>
+                                            ) : null}
+                                        </Group>
+                                    )}
                     </Group>
                 )}
 
