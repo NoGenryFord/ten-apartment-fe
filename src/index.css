@@ -1,0 +1,15 @@
+:root {
+	--mantine-color-text: #121417;
+	--mantine-color-dimmed: #495057;
+}
+
+body {
+	color: var(--mantine-color-text);
+	background: #ffffff;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+	color: var(--mantine-color-text);
+}

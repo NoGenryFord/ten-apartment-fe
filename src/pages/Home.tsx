@@ -95,13 +95,13 @@ export const Home = () => {
                             <Carousel.Slide key={item.id}>
                                 <Paper withBorder radius="md" className={classes.gallerySlide}>
                                     <Image src={item.src} alt={item.name} className={classes.galleryImage} />
-                                    <Text p="sm" size="sm" c="dimmed" lineClamp={1}>{item.name}</Text>
+                                    <Text p="sm" size="sm" c="dark" lineClamp={1}>{item.name}</Text>
                                 </Paper>
                             </Carousel.Slide>
                         ))}
                     </Carousel>
                 ) : (
-                    <Text c="dimmed">Gallery will appear after apartments with photos are loaded.</Text>
+                    <Text c="dark">Gallery will appear after apartments with photos are loaded.</Text>
                 )}
             </section>
 

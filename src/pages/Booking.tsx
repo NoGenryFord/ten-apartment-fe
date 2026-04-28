@@ -242,7 +242,7 @@ export const Booking = () => {
                 <HeaderSimple />
                 <Paper withBorder p="xl" radius="md" className={classes.pageCard}>
                     <Title order={2} mb="md">Invalid booking link</Title>
-                    <Text c="dimmed" mb="lg">
+                    <Text c="dark" mb="lg">
                         Booking page expects apartment ID, check-in date, and check-out date.
                     </Text>
                     <Group>
@@ -278,7 +278,7 @@ export const Booking = () => {
                 <HeaderSimple />
                 <Paper withBorder p="xl" radius="md" className={classes.pageCard}>
                     <Title order={2} mb="md">Apartment not found</Title>
-                    <Text c="dimmed" mb="lg">Could not load apartment details for booking.</Text>
+                    <Text c="dark" mb="lg">Could not load apartment details for booking.</Text>
                     <Button component={Link} to="/" variant="light">Back to apartments</Button>
                 </Paper>
             </Container>
@@ -308,25 +308,25 @@ export const Booking = () => {
 
                         <Stack gap="sm">
                             <Group justify="space-between">
-                                <Text c="dimmed">Check-in</Text>
+                                <Text c="dark">Check-in</Text>
                                 <Text fw={500}>{dayjs(startDate).format('DD MMM YYYY')}</Text>
                             </Group>
                             <Group justify="space-between">
-                                <Text c="dimmed">Check-out</Text>
+                                <Text c="dark">Check-out</Text>
                                 <Text fw={500}>{dayjs(endDate).format('DD MMM YYYY')}</Text>
                             </Group>
                             <Group justify="space-between">
-                                <Text c="dimmed">Nights</Text>
+                                <Text c="dark">Nights</Text>
                                 <Text fw={500}>{nights}</Text>
                             </Group>
                             {estimatedTotal !== null && (
                                 <Group justify="space-between">
-                                    <Text c="dimmed">Estimated total</Text>
+                                    <Text c="dark">Estimated total</Text>
                                     <Text fw={700}>{estimatedTotal.toFixed(2)} Kč</Text>
                                 </Group>
                             )}
                             {apartment.description && (
-                                <Text size="sm" c="dimmed" mt="xs" lineClamp={4}>
+                                <Text size="sm" c="dark" mt="xs" lineClamp={4}>
                                     {apartment.description}
                                 </Text>
                             )}
@@ -494,7 +494,7 @@ export const Booking = () => {
                                     address={apartment.address}
                                 />
                             ) : (
-                                <Text c="dimmed">Location is not available yet.</Text>
+                                <Text c="dark">Location is not available yet.</Text>
                             )}
                         </Paper>
 

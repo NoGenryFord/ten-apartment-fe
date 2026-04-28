@@ -4,6 +4,7 @@ export const theme = createTheme({
     primaryColor: 'blue',
     fontFamily: 'Outfit, var(--mantine-font-family)',
     defaultRadius: 'md',
+    black: '#121417',
 
     headings: {
         fontFamily: 'Outfit, var(--mantine-font-family)',

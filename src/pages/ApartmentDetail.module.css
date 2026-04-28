@@ -10,7 +10,7 @@
     object-fit: cover;
     display: block;
 
-    @media (max-width: $mantine-breakpoint-sm) {
+    @media (max-width: 48em) {
         height: 260px;
     }
 }
@@ -113,13 +113,13 @@
     /* Available — looks like a normal calendar day */
     &[data-variant='normal'] {
         border: 1px solid var(--mantine-color-gray-3);
-        color: var(--mantine-color-dark-6);
+        color: var(--mantine-color-black);
     }
 
     /* Unavailable — matches the disabled style in getDayProps */
     &[data-variant='unavailable'] {
-        color: var(--mantine-color-gray-5);
-        opacity: 0.4;
+        color: var(--mantine-color-gray-7);
+        opacity: 0.65;
         text-decoration: line-through;
     }
 

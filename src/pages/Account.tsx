@@ -56,7 +56,7 @@ export const Account = () => {
                 <HeaderSimple />
                 <Paper withBorder p="xl" radius="md">
                     <Title order={2} mb="sm">User account</Title>
-                    <Text c="dimmed" mb="lg">
+                    <Text c="dark" mb="lg">
                         You are not logged in yet. Please login to access your account.
                     </Text>
                     <Group>
@@ -85,7 +85,7 @@ export const Account = () => {
         <Container size="xl" py="xl">
             <HeaderSimple />
 
-            <Anchor component={Link} to="/" c="dimmed" size="sm" mb="md" display="block">
+            <Anchor component={Link} to="/" c="dark" size="sm" mb="md" display="block">
                 ← Back to apartments
             </Anchor>
 
@@ -93,7 +93,7 @@ export const Account = () => {
                 <Group justify="space-between" align="flex-start">
                     <div>
                         <Title order={2}>My account</Title>
-                        <Text c="dimmed" mt={4}>
+                        <Text c="dark" mt={4}>
                             {profileQuery.data?.email ?? localUser?.email}
                         </Text>
                     </div>
@@ -134,7 +134,7 @@ export const Account = () => {
                         <Title order={4} mb="md">My reservations</Title>
 
                         {!bookingsQuery.data || bookingsQuery.data.length === 0 ? (
-                            <Text c="dimmed">You do not have any bookings yet.</Text>
+                            <Text c="dark">You do not have any bookings yet.</Text>
                         ) : (
                             <Table striped highlightOnHover withTableBorder>
                                 <Table.Thead>
@@ -191,8 +191,8 @@ export const Account = () => {
                     <Paper withBorder p="lg" radius="md">
                         <Title order={4} mb="sm">Settings</Title>
                         <Stack gap="xs">
-                            <Text c="dimmed">This section is prepared for future profile settings.</Text>
-                            <Text size="sm" c="dimmed">
+                            <Text c="dark">This section is prepared for future profile settings.</Text>
+                            <Text size="sm" c="dark">
                                 We will add personal data editing, notifications and password management here later.
                             </Text>
                         </Stack>

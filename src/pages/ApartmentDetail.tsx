@@ -141,7 +141,7 @@ export const ApartmentDetail = () => {
         <Container size="xl" py="xl">
             <HeaderSimple />
 
-            <Anchor component={Link} to="/" c="dimmed" size="sm" my="md" display="block">
+            <Anchor component={Link} to="/" c="dark" size="sm" my="md" display="block">
                 ← Back to apartments
             </Anchor>
 
@@ -155,7 +155,7 @@ export const ApartmentDetail = () => {
                         </Badge>
                     </Group>
                     {apartment.address && (
-                        <Text c="dimmed" size="sm">📍 {apartment.address}</Text>
+                        <Text c="dark" size="sm">📍 {apartment.address}</Text>
                     )}
                 </Stack>
             </Group>
@@ -198,14 +198,14 @@ export const ApartmentDetail = () => {
                         </Carousel>
                     ) : (
                         <div className={classes.noMedia}>
-                            <Text c="dimmed">No photos yet</Text>
+                            <Text c="dark">No photos yet</Text>
                         </div>
                     )}
 
                     {/* Description */}
                     <Paper p="xl" radius="md" withBorder>
                         <Title order={3} mb="md">About this apartment</Title>
-                        <Text c="dimmed" style={{ lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+                        <Text c="dark" style={{ lineHeight: 1.8, whiteSpace: 'pre-line' }}>
                             {apartment.description}
                         </Text>
 
@@ -227,13 +227,13 @@ export const ApartmentDetail = () => {
                                     {apartment.max_guests && (
                                         <Group gap="xs">
                                             <Text size="sm" fw={600}>👥 Max guests:</Text>
-                                            <Text size="sm" c="dimmed">{apartment.max_guests}</Text>
+                                            <Text size="sm" c="dark">{apartment.max_guests}</Text>
                                         </Group>
                                     )}
                                     {apartment.address && (
                                         <Group gap="xs">
                                             <Text size="sm" fw={600}>📍 Address:</Text>
-                                            <Text size="sm" c="dimmed">{apartment.address}</Text>
+                                            <Text size="sm" c="dark">{apartment.address}</Text>
                                         </Group>
                                     )}
                                 </Stack>
@@ -251,7 +251,7 @@ export const ApartmentDetail = () => {
                                 address={apartment.address}
                             />
                         ) : (
-                            <Text c="dimmed">Location is not available yet.</Text>
+                            <Text c="dark">Location is not available yet.</Text>
                         )}
                     </Paper>
 
@@ -266,15 +266,15 @@ export const ApartmentDetail = () => {
                         <Group gap="xl" mb="md" wrap="nowrap">
                             <Group gap={8} align="center">
                                 <div className={classes.legendDay} data-variant="normal">15</div>
-                                <Text size="xs" c="dimmed">Available</Text>
+                                <Text size="xs" c="dark">Available</Text>
                             </Group>
                             <Group gap={8} align="center">
                                 <div className={classes.legendDay} data-variant="unavailable">15</div>
-                                <Text size="xs" c="dimmed">Unavailable</Text>
+                                <Text size="xs" c="dark">Unavailable</Text>
                             </Group>
                             <Group gap={8} align="center">
                                 <div className={classes.legendDay} data-variant="selected">15</div>
-                                <Text size="xs" c="dimmed">Selected</Text>
+                                <Text size="xs" c="dark">Selected</Text>
                             </Group>
                         </Group>
 
@@ -331,19 +331,19 @@ export const ApartmentDetail = () => {
                                 <Divider my="lg" />
                                 <Stack gap="sm">
                                     <Group justify="space-between">
-                                        <Text size="sm" c="dimmed">Check-in</Text>
+                                        <Text size="sm" c="dark">Check-in</Text>
                                         <Text size="sm" fw={500}>
                                             {dayjs(dateRange[0]).format('DD MMM YYYY')}
                                         </Text>
                                     </Group>
                                     <Group justify="space-between">
-                                        <Text size="sm" c="dimmed">Check-out</Text>
+                                        <Text size="sm" c="dark">Check-out</Text>
                                         <Text size="sm" fw={500}>
                                             {dayjs(dateRange[1]).format('DD MMM YYYY')}
                                         </Text>
                                     </Group>
                                     <Group justify="space-between">
-                                        <Text size="sm" c="dimmed">Nights</Text>
+                                        <Text size="sm" c="dark">Nights</Text>
                                         <Text size="sm" fw={500}>{nights}</Text>
                                     </Group>
                                     <Divider />
