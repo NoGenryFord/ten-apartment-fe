@@ -1,14 +1,20 @@
 import {Button, Container, Text, Title} from '@mantine/core';
+import type {CSSProperties} from 'react';
 
 import classes from './HeroText.module.css';
+import heroPhoto from '../../assets/hero-photo-2.png';
 
 interface HeroTextProps {
     onReservationClick?: () => void;
 }
 
 export function HeroText({onReservationClick}:HeroTextProps) {
+    const wrapperStyle = {
+        '--hero-bg-image': `url(${heroPhoto})`,
+    } as CSSProperties;
+
     return (
-        <Container className={classes.wrapper} size={1400}>
+        <Container className={classes.wrapper} size={1400} style={wrapperStyle}>
             <div className={classes.inner}>
                 <div className={classes.content}>
                     <div className={classes.left}>
