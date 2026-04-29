@@ -8,11 +8,13 @@ import { Register } from './pages/Register';
 import { Contacts } from './pages/Contacts';
 import { About } from './pages/About';
 import { ScrollToTopButton } from './components/scrollToTop/ScrollToTopButton';
+import { ScrollToTopOnRouteChange } from './components/scrollToTop/ScrollToTopOnRouteChange';
 import { SiteFooter } from './components/siteFooter/SiteFooter';
 
 function App() {
   return (
     <>
+      <ScrollToTopOnRouteChange />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/apartment/:id" element={<ApartmentDetail />} />
